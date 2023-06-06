@@ -31,5 +31,10 @@ Razor, então, é o item que possibilita a interpolação entre C# e HTML, por e
 
 O Razor possui dois tipos de extensões para o mesmo tipo de código: `.cshtml` e `.razor`
 
-Utilizando ASP.NET MVC (Model View Controller), as views também utilizam Razor como linguagem, por ser um padrão .NET
+Utilizando ASP.NET MVC (Model View Controller), as views também utilizam Razor como View Engine, por ser um padrão .NET
 
+## Razor Pages
+
+Razor Pages é uma forma de estruturar uma aplicação web, diferente do MVC que é uma forma arquitetural.
+
+O Razor Pages é um formato muito mais simples de criar aplicações web, que não exige tanto do entendimento de arquitetura para estruturar páginas e que também não necessita do entendimento das Models, Views e Controllers
