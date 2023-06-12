@@ -1,0 +1,37 @@
+﻿@page
+@model MyRazorApp.Pages.indexModel
+@using System.Globalization;
+@{
+    Layout = null;        
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Razor Page</title>
+    </head>
+    <body>
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Title</td>
+                    <td>Price</td>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var category in Model.Categories)
+                {
+                    <tr>
+                        <td>@category.Id</td>
+                        <td>@category.Title</td>
+                        <td>@category.Price.ToString("C", new CultureInfo("en-US"))</td>
+                    </tr>
+                }      
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
+
