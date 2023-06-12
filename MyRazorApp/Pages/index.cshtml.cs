@@ -8,7 +8,7 @@ public class indexModel : PageModel
 
     public async Task OnGet()
     {
-        await Task.Delay(1000);
+        await Task.Delay(200);
         for (int i = 0; i <= 100; i++)
         {
             Categories.Add(new Category(i, $"Categoria {i}", i * 18.95m));

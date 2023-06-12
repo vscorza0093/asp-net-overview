@@ -248,3 +248,61 @@ No caso, a Culture Info tem relação com o idioma padrão que está sendo utili
 <td>@category.Price.ToString("C", new CultureInfo("pt-BR")</td>
 ```
 dessa forma, a culture info será setada para português-brasileiro
+
+
+## Página Razor
+
+Um `@page` é uma página Razor que será usada para criar outras páginas, pois ela é o modelo usado de base.
+
+Se criarmos, por exemplo, duas novas páginas baseadas em arqivos Razor Pages, `Sobre`e `Login`, ambas as páginas serão automaticamente reconhecidas, pois no arquivo `Program.cs` estamos utilizando `UseRouting()` e `MapRazorPages()` que faz toda a rota e reconhecimento dos arquivos que no nosso projeto estão dentro da pasta padrão nomeada Pages.
+
+Então, se digitarmos o endereço completo do site e o endpoint desejado, nós chegaremos à página que desejamos.
+
+O browser não entende arquivos `.cshtml`, então, no final, todo arquivo html é gerado dentro da pasta `wwwroot` do projeto para que esse arquivo possa ser servido ao browser.
+
+PS: Os arquivos físicos não irão existir dentro da pasta `wwwroot` pois eles são servidos sob demanda, mas se inspecionarmos, encontraremos os arquivos temporários.
+
+* Quando estamos usando uma tag `<a>` dentro de .NET e queremos nos referir à raiz da aplicação, devemos utilizar o `~/` no elemento `href`. `<a href="~/">` e qualquer nome posterior a barra, será o nome da página que desejamos acessar. `<a href="~/About">`
+
+* Lembrando que, por ser uma aplicação Server-Side, toda nova requisição irá recarregar a página, diferente de uma aplicação Angular ou React, que trabalha com estados do lado Client-Side
+
+
+## Partial Views 
+
+Nós devemos aplicar nosso menu a todas as páginas existentes, porém, como fazemos isso sem copiar e colar o mesmo código em cada página?
+
+View Partials é um recurso do ASP.NET que permite que criemos uma Partial só para o pedaço de código HTML desejado.
+
+É convenção que se utilize uma pasta chamada `Shared` dentro do diretório `Pages`. Embora não seja obrigatório, manter esse padrão facilitará a interação com o projeto ASP.NET
+
+Criaremos um novo arquivo de formato `.cshtml`, não precisamos criar uma Razor Pages, apenas um novo arquivo. É comum utilizar o sufixo `Partial` para identificar que este novo arquivo é uma partial dentro do projeto.
+
+Um arquivo que será uma Partial View não deve conter `@page` pois ele não é uma página e não queremos que haja uma rota para acessar esse arquivo como uma página.
+
+Pegaremos o código HTML que desejarmos e recortaremos ele do nosso index e colaremos no novo arquivo criado, que será a nossa Partial View, no caso, nomeada como `NavMenuPartial`
+
+Para chamarmos essa Partial dentro do nosso código, nós utilizamos o código `@Html.RenderPartialAsync(string)` passando o nome do arquivo como parâmetro, porém, essa não é a forma adequada de utilizar Partials, devemos, então, utilizar os Tag Helpers.
+
+### Tag Helpers
+
+Tag Helper é a forma de utilizar o ASP.NET num formato amigável para o HTML.
+
+Quando adicionamos suporte dos Tag Helpers, além de contar com as tags do HTML, contaremos também com tags do ASP.NET
+```csharp
+<asp- >
+```
+No final das contas, os Tag Helpers são uma maneira otimizada e limpa de escrever códigos para renderizar o conteúdo através das Partial Views. 
+
+Para usar Tag Helpers nós devemos adicionar uma nova linha em cada página que irá necessitar as tags ASP.NET ou Partial Views.
+Esse pacote é contido dentro de `Microsoft.AspNetCore.Mvc.TagHelpers` e nós importaremos todos os `TagHelpers` contidos nesse pacote.
+```csharp
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+```
+e dentro do nosso código HTML, usaremos a tag `<partial />` e utilizar o seu atributo `name=""` referenciando o caminho e o nome do arquivo onde a nossa Partial View está contida.
+```csharp
+<partial name="Shared/NavMenuPartial"/>
+```
+Nós podemos criar nossas Tag Helpers para interagir com funcionalidades do C#, porém, esse assunto não será abordado nesse material. 
+
+
+## View Imports
