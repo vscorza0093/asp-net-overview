@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Razor Page</title>
+</head>
+<body>
+    <header>
+    <!--  
+        Tag Helper 
+        É um formato "amistoso" de se usar tags ASP.NET com HTML
+        Para isso devemos adicionar o TagHelper com o código:
+        @addTagHelper *, Microsoft.AspNetCore.MVC.TagHelpers
+
+        A Partir disso podemos utilizar a tag <partial> do ASP.NET, passando o parâmetro 'name' com o caminho até o arquivo desejado. É padrão do ASP.NET deixar esses arquivos em uma pasta 'Shared'.
+    -->
+    <partial name="Shared/TableColumnPartial"/>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>

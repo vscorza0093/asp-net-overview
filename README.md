@@ -2,6 +2,8 @@
 
 Uma visão geral sobre o ASP.NET Razor Pages - Balta.io
 
+O conteúdo deste README foi escrito com as minhas palavras, para me ajudar a absover os conceitos apresentados no curso `Uma visão geral sobre o ASP.NET Razor Pages` no site balta.io do André Baltieri.
+
 `dotnet sdk check`
 SDKs do .NET:
 Versão       Status
@@ -306,3 +308,113 @@ Nós podemos criar nossas Tag Helpers para interagir com funcionalidades do C#, 
 
 
 ## View Imports
+
+View Import é um recurso para facilitar a reutilização de códigos, nos ajudando a diminuir a quantidade de código que deve ser reescrito a cada vez que precisemos utilizar um recurso de uma Partial, por exemplo, em uma nova página que acaba de ser criada.
+
+Dentro da pasta `Pages` criamos um arquivo chamado `_ViewImports.cshtml` e vamos adicionar os imports necessários no momento
+
+```csharp
+@using MyRazorApp
+@using MyRazorApp.Pages
+
+@using System.Globalization
+```
+
+Agora podemos remover o `MyRazorApp` e `System Globalization` de todos os outros arquivos, e reduzir o nome de todas as `Pages`, excluindo o `MyRazorApp.Pages` da importação, por exemplo:
+
+```csharp
+@using MyRazorApp.Pages.IndexModel
+```
+irá se tornar
+```csharp
+@using IndexModel
+```
+
+Com isso conseguimos limpar bastante a quantidade de código da nossa aplicação.
+
+
+## Layouts
+
+Ao invés de ficar replicando o código a baixo em todas as outras páginas, podemos utilizar um outro recurso do ASP.NET, conhecido como Layouts.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Razor Page</title>
+</head>
+<body>
+    <header>
+        <partial name="Shared/NavMenuPartial"/>
+    </header>
+    <main>
+    </main>
+</body>
+</html>
+```
+
+Dentro da pasta `Shared` criamos um arquivo _L`ayouts.cshtml`.
+
+Essa página Layout servirá de base para outras páginas
+
+Essa página Layout não conterá um `@page`, não é uma página que precisa ser encontrada, então não é necessário fazer uma rota para esta página desta forma.
+
+Em contra partida, na página que irá utilizar o Layout, devemos declará-lo
+
+```csharp
+@{
+    Layout = "Shared/_Layout";
+}
+```
+
+Agora devemos explicar para o ASP.NET onde desejamos renderizar nossa página de Layout, adicionando o método `RenderBody()` dentro tag `main` do nosso arquivo `_Layout.cshtml`, para renderizar o Body da página que está chamando nosso Layout
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Razor Page</title>
+</head>
+<body>
+    <header>
+        <partial name="Shared/NavMenuPartial"/>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>
+```
+
+Isso nos permite criar diversos Layouts e aplicar cada um para uma página específica, nos ajudando a reduzir drasticamente o código escrito, sendo possível excluir, no caso desse projeto, as tags <!DOCTYPE> <html> <head> <body> de todos os outros arquivos de página. 
+
+
+## View Start
+
+Podemos aplicar um Layout específico a todas as páginas que criarmos.
+
+Na nossa pasta `Shared` devemos criar um arquivo chamado `_ViewStart.cshtml`.
+
+No arquivo criado iremos inserir uma linha de código identificando que este arquivo está apontando para o nosso arquivo de Layout padrão
+
+```html
+@{
+    Layout = "Shared/_Layout";
+}
+```
+
+Agora, em todas as páginas que desejamos utilizar nosso Layout, podemos simplesmente não "importar" nenhum Layout e nas páginas que não desejamos utilizar o Layout padrão devemos sobrescrevê-lo, passando o valor `null` ou apontar para um Layout secundário.
+```html
+@{
+    Layout = null;
+}
+```
+
+## Rotas e Hiperlinks
+
+Sempre que for necessário gerar um href dentro do nosso código devemos nos lembrar dos TagHelpers, que são as Tags de auxilio do ASP.NET para gerarmos nosso código, que estão trabalhando com conjunto com UseRouting e outros recursos de rotas para criar essas rotas e saber como chegar em nossa página.
+
+Podemos usar o ASP.NET para gerar esses links e sempre que atualizarmos a URL de uma página, essa atualização será feita automaticamente para toda a rota.
+
+Esse recurso ajuda a evitar a criação de URLs de maneira completamente manual, então se uma alteração for necessária, não precisa ser feita em todos os códigos que contém uma rota para determinada página que sofreu alteração em seu nome, evitando um erro 404.
+
+Ao invés de usarmos href para a geração de links, utilizaremos a tag <a> ecom conjunto com `asp-page`: <a asp-page=""> passando o nome desejado no parâmetro de asp-page
