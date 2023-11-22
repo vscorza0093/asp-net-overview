@@ -418,3 +418,156 @@ Podemos usar o ASP.NET para gerar esses links e sempre que atualizarmos a URL de
 Esse recurso ajuda a evitar a criação de URLs de maneira completamente manual, então se uma alteração for necessária, não precisa ser feita em todos os códigos que contém uma rota para determinada página que sofreu alteração em seu nome, evitando um erro 404.
 
 Ao invés de usarmos href para a geração de links, utilizaremos a tag <a> ecom conjunto com `asp-page`: <a asp-page=""> passando o nome desejado no parâmetro de asp-page
+
+
+## View Data
+
+Nós podemos passar informações para diversas páginas através de um item chamado `ViewData`, que é um dicionário, onde definiremos o nome e o valor do objeto dentro de qualquer Tag HTML.
+
+Utilizaremos a `ViewData` dentro do nosso arquivo de Layout e definiremos o título e um H1 em nosso Layout e aplicaremos para cada página separadamente.
+
+```html
+<head>
+    <title>@ViewData["Title"] - My Razor App</title>
+</head>
+<body>
+    <h1>@ViewData["Title"]</h1>
+</body>
+```
+
+Em seguida inserimos a definição dentro de cada arquivo desejado
+
+```html
+@page
+@model Index
+@{
+    ViewData["Title"] = "Home Page";
+    ViewData["H1"] = "Welcome to my Web Page"
+}
+```
+
+
+## Parâmetros e Rotas
+
+Podemos passar parâmetros para URLs de algumas maneiras.
+
+No exemplo a baixo estamos definindo a URL da página com seu caminho inicial, seu nome e o parâmetro obrigatório.
+
+```csharp
+public class HomePage : PageModel
+{
+    public void OnGet(int row)
+    {
+
+    }
+}
+```
+```html
+@page "~/home/{row}"
+```
+
+Se tentarmos acessar a página sem especificar um parâmetro `localhost:8000/home`, obteremos um erro 404 e ao passarmos o parâmetro obrigatório, acessaremos a página normalmente `localhost:8000/home/1`, nunca esquecendo que, obviamente, o parâmetro passado deve corresponder ao parâmetro requisitado para que não ocorra um erro 404.
+
+A partir disso nós podemos manipular este parâmetro dentro do nosso código.
+
+Se quisermos definir um valor padrão e evitar que nossa aplicação quebre em casos que o valor não tenha sido passado nós podemos simplesmente inserir esse valor no parâmetro recebido pelo método OnGet() da nossa classe que herda de PageModel.
+
+```csharp
+public class HomePage : PageModel
+{
+    public void OnGet(int row=0, int column=0)
+    {
+    }
+}
+```
+
+Também podemos definir nosso parâmetro no arquivo HTML como Nullable.
+
+```html
+@page "~/home/{row?}/{column?}"
+```
+
+Podemos definir nosso parâmetro como Nullable no HTML sem definir um valor padrão para ele no nosso método OnGet(), porém, dessa forma estamos tratando erros diferentes.
+
+Podemos finalmente chamar nossa URL sem passar parâmetros ou então passando parâmetros e com a opção também da seguinte chamada: `localhost:8000/home?row=10&column=3`.
+
+Essa composição é conhecida como QueryString, começando com `?` e separando os parâmetros por `&`
+
+Podemos especificar a forma de chamada que terá prioridade para recuperar nossos parâmetros, através do uso de alguns atributos como: `[FromQuery]`, `[FromForm]`, `[FromRoute]`
+
+```csharp
+public class HomePage : PageModel
+{
+    public void OnGet([FromQuery]int row=0, [FromQuery]int column=0)
+    {
+    }
+}
+```
+
+## Por que não utilizar Session atualmente?
+
+Session é uma informação que fica na memória e dura por um tempo X e faz parte de  um modelo antigo do ASP.NET. A partir de determinada versão, começou-se a trabalhar muito com aplicações sem estado (stateless), devido a utilização da arquitetura de MVC.
+
+Por exemplo, um site está hospedado na núvem e faz uma promoção em um dia específico do ano e é preciso aumentar a quantidade de máquinas que está rodando o site. Então o site não está sendo rodado por apenas uma máquina. 
+
+Então quando fazemos uma requisição para a máquina 1 nós geramos uma informação na sessão, porém essa sessão não é compartilhada entre todas as máquinas. Na próxima vez que acessarmos o site, podemos acabar caindo na máquina 2 porque a máquina 1 estava cheia, porém na máquina 2 não existe a sessão com a qual você estava trabalhando. 
+
+Para isso temos o ViewData, TempData, ViewBag e outras formas de segurar nossas iformações durante uma requisição, fora isso, nossa única opção de autenticação atualmente seria pelo uso de Cookies.
+
+
+## Append Version
+
+Digamos que a página de uma loja possui um design padrão que está definido em um arquivo css, porém essa mesma loja possui outros designs prontos para datadas comemorativas diferentes.
+
+O problema é que no primeiro acesso do usuário à nossa aplicação ele irá carregar nosso arquivo estático de formato `.css`, e como todo arquivo estático ele será armazenado no cache e nas próximas vezes que este usuário recarregar a página ele já irá identificar esse arquivo no cache local e não irá fazer uma nova requisição deste arquivo para o servidor e irá ignorar qualquer atualização feita no arquivo, mantendo sempre o design que foi cacheado.
+
+Lembrando que a utilização do cache é importante para a boa performance das aplicações e queremos apenas que esse arquivo estático seja atualizado quando subirmos uma nova versão do projeto.
+
+Para isso utilizamos um recurso do ASP.NET que está incluso nos `Tag Helpers` que é o `asp-append-version`, onde podemos definir seu valor como `true` para que toda vez que fizermos um novo deploy do projeto seja gerado um hash para identificar nosso arquivo css, o que tornará seu nome dinâmico, fazendo com que o nome de um arquivo em cache no computador do usuário seja diferente do nome da nova versão em deploy.
+
+```html
+<link rel="StyleSheet" href="~/css/site.css" asp-append-version="true"/>
+```
+
+Podemos verificar os nomes gerados através das ferramentas de desenvolvimento do navegador.
+
+
+## Nested CSS
+
+Um recurso interessante do Razor é a possibilidade de criar arquivos css individuais para páginas Razor específicas.
+
+Esse recurso nos ajuda a evitar que toda página carregue informações css desnecessárias para si, podendo individualizar as necessidades de cada página e mantendo um arquivo padrão mais centralizado.
+
+Criamos este arquivo na pasta Pages, utilizamos o mesmo nome da página a qual queremos aplicar aquele html, a extensão secundária `cshtml` e a extensão principal `css`, exemplo: `Home.cshtml.css`
+
+Nosso css estará aninhado com nosso arquivo cshtml, junto com nosso arquivo css.
+
+Toda vez que utilizamos esse método, nossa aplicação irá gerar um arquivo de css temporário, que tem um nome específico que é composto pelo `~`, o nome da aplicação seguido da extensão secundária `styles` seguido da extensão principal `css`, exemplo: "~/MyRazorApp.styles.css". 
+
+Esse arquivo não será reconhecido pela IDE, pois de fato não existe, esse arquivo será gerado sob demanda pela nossa aplicação, e podemos e inspecionar o arquivo gerado através das ferramentas de desenvolvimento do navegador.
+
+
+## Render Section
+
+Agora queremos inserir um arquivo javascript no nosso código que irá simplesmente exibir um alerta com uma mensagem.
+
+Aplicamos ele ao Layout e ele está funcionando para todas as páginas. Mas digamos que queremos que ele funcione em apenas uma página específica, por exemplo Categorias.
+
+Por convenção, tags para chamar um arquivo css ficam no head do código e arquivos tags para chamar um arquivo java script ficam no final do código, podendo ser até mesmo depois do footer.
+
+Se chamarmos o script JS apenas na página Categorias teremos um problema de ordem de renderização, já que o script JS será sempre renderizado dentro do main do html onde está contido. Queremos que ele seja renderizado apenas após o footer, mas podemos querer que ele seja renderizado em qualquer outro setor do código.
+
+Essa técnica serve para outros componentes além de scripts.
+
+Deveremos usar, em nosso Layout principal a tag `@RenderSection()`, que criará uma seção, pense como uma div, e irá renderizar os itens. Passaremos uma string para o parâmetro `name` e podemos também passar o parâmetro `required` que por padrão vem como falso, exemplo: `@RenderSection(name:"scripts", required:false)` o required serve para dizer se todas as páginas devem implementar este item.
+
+Agora implementamos o script individualmente em cada página necessária, através da tag `@section` passando o nome criado no `@RenderSection()` e a tag completa com caminho para o arquivo JS.
+
+```html
+@section scripts
+{
+    <script src="~/js/site.js"></script>
+}
+```
+
+Lembrando que isso pode ser usado para qualquer item que desejamos controlar a ordem de renderização, não precisa ser necessariamente um arquivo JS.

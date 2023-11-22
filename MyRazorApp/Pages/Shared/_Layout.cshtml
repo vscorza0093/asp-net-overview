@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Razor Page</title>
+    <title>@ViewData["Title"] - My Razor Page</title>
+    <link rel="StyleSheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="StyleSheet" href="~/MyRazorApp.styles.css" asp-append-version="true"/>
 </head>
 <body>
+    <partial name="Shared/NavMenuPartial"/>
+
+    <h1>@ViewData["H1"]</h1>
     <header>
     <!--  
         Tag Helper 
@@ -13,10 +18,11 @@
 
         A Partir disso podemos utilizar a tag <partial> do ASP.NET, passando o parâmetro 'name' com o caminho até o arquivo desejado. É padrão do ASP.NET deixar esses arquivos em uma pasta 'Shared'.
     -->
-    <partial name="Shared/NavMenuPartial"/>
     </header>
     <main>
         @RenderBody()
     </main>
+    <footer> 2023 - Powered by VSCZ </footer>
+    @RenderSection(name:"scripts",required:false)
 </body>
 </html>
