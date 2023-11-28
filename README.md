@@ -46,7 +46,7 @@ A aplicação já vem construída por padrão, então já conseguimos debugar e 
 
 Razor é um Motor de Visualização (View Engine)
 
-Sempre que quisermos servir qualquer conteúdo HTML no .NET, devemos utilizar um motor de visualização, que é responsável por manipular qualquer informação, gerar o HTML, CSS ou JS e entregar o output desse item para a tela. 
+Sempre que quisermos servir qualquer conteúdo HTML no .NET, devemos utilizar um motor de visualização, que é responsável por manipular qualquer informação, gerar o HTML, CSS ou JS e entregar o output desse item para o navegador. 
 
 Razor, então, é o item que possibilita a interpolação entre C# e HTML, por exemplo. Através do Razor nós conseguimos criar arquivos que possuem HTML e C# integrados, ou seja podemos trabalhar com programação dentro de HTML.
 
@@ -112,24 +112,24 @@ Todas as páginas Razor, por padrão, deverão ficar dentro de um diretório `Pa
 
 ### Arquivos Razor Pages
 
-Um Razor Pages é dividido em dois arquivos, um arquivo `.cshtml`e um arquivo `.cshtml.cs`
+Um Razor Page é dividido em dois arquivos, um arquivo `.cshtml`e um arquivo `.cshtml.cs`
 
-Apesar de parecer um pouco confuso e dos arquivos no explorer da IDE estarem aninhados, eles não são arquivos aninhados, é apenas um agrupamento para facilitar a visualização. 
+Apesar de parecer um pouco confuso e apesar dos arquivos no explorer da IDE estarem aninhados, eles não são arquivos aninhados, é apenas um agrupamento para facilitar a visualização. 
 
 A questão de termos dois arquivos facilita na separação de funções.
 
-O arquivo `cshtml`, como comentado anteriormente é uma junção de um arquivo C# com um arquivo HTML, onde temos uma sintaxe de programação do ambiente ASP.NET.
+O arquivo `cshtml`, como comentado anteriormente, é uma junção de um arquivo C# com um arquivo HTML, onde temos uma sintaxe de programação do ambiente ASP.NET.
 O `cshtml.cs` é uma class C#, complementar ao arquivo `cshtml`, essa classe herda de PageModel que serve como modelo para essa página que nós vamos exibir. 
 Essa classe suporta os dois métodos a baixo:
 ```csharp
 OnGet()
 OnPost()
 ```
-O `OnGet()` será executado sempre que nossa página for renderizada, sempre que fizermos um Get para nossa página e sempre que fizermos um Post para nossa página, o método OnPost() será ativado.
+O método `OnGet()` será executado sempre que nossa página for renderizada, ou seja sempre que fizermos um Get para nossa página e sempre que fizermos um Post para nossa página, o método `OnPost()` será ativado.
 
 Existem muitas funcionalidades C# presentes dentro de Razor, porém não são todas. Devemos sempre utilizar as chaves ao abrir e fechar um loop, ou uma declaração condicional. Porém, podemos mesclar quase livremente o código C# com o código HTML
 
-```csharp
+```html
     <div>
         @for(int i = 0; i < 10; i++)
         {
@@ -300,7 +300,7 @@ Esse pacote é contido dentro de `Microsoft.AspNetCore.Mvc.TagHelpers` e nós im
 ```csharp
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 ```
-e dentro do nosso código HTML, usaremos a tag `<partial />` e utilizar o seu atributo `name=""` referenciando o caminho e o nome do arquivo onde a nossa Partial View está contida.
+e dentro do nosso código HTML, usaremos a tag `<partial />` e utilizaremos o seu atributo `name=""` referenciando o caminho e o nome do arquivo onde a nossa Partial View está contida.
 ```csharp
 <partial name="Shared/NavMenuPartial"/>
 ```
@@ -352,7 +352,7 @@ Ao invés de ficar replicando o código a baixo em todas as outras páginas, pod
 </html>
 ```
 
-Dentro da pasta `Shared` criamos um arquivo _L`ayouts.cshtml`.
+Dentro da pasta `Shared` criamos um arquivo `_Layouts.cshtml`.
 
 Essa página Layout servirá de base para outras páginas
 
@@ -411,7 +411,7 @@ Agora, em todas as páginas que desejamos utilizar nosso Layout, podemos simples
 
 ## Rotas e Hiperlinks
 
-Sempre que for necessário gerar um href dentro do nosso código devemos nos lembrar dos TagHelpers, que são as Tags de auxilio do ASP.NET para gerarmos nosso código, que estão trabalhando com conjunto com UseRouting e outros recursos de rotas para criar essas rotas e saber como chegar em nossa página.
+Sempre que for necessário gerar um href dentro do nosso código devemos nos lembrar dos TagHelpers, que são as Tags de auxilio do ASP.NET para gerarmos nosso código, que estão trabalhando em conjunto com UseRouting e outros recursos para criar as rotas e chegar até nossa página.
 
 Podemos usar o ASP.NET para gerar esses links e sempre que atualizarmos a URL de uma página, essa atualização será feita automaticamente para toda a rota.
 
@@ -538,7 +538,7 @@ Um recurso interessante do Razor é a possibilidade de criar arquivos css indivi
 
 Esse recurso nos ajuda a evitar que toda página carregue informações css desnecessárias para si, podendo individualizar as necessidades de cada página e mantendo um arquivo padrão mais centralizado.
 
-Criamos este arquivo na pasta Pages, utilizamos o mesmo nome da página a qual queremos aplicar aquele html, a extensão secundária `cshtml` e a extensão principal `css`, exemplo: `Home.cshtml.css`
+Criamos este arquivo na pasta Pages, utilizamos o mesmo nome da página a qual queremos aplicar, utilizamos a extensão secundária `cshtml` e a extensão principal `css`, exemplo: `Home.cshtml.css`
 
 Nosso css estará aninhado com nosso arquivo cshtml, junto com nosso arquivo css.
 

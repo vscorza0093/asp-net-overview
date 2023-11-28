@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>@ViewData["Title"] - My Razor Page</title>
-    <link rel="StyleSheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="StyleSheet" href="~/MyRazorApp.styles.css" asp-append-version="true"/>
+    <link rel="StyleSheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="StyleSheet" href="~/MyRazorApp.styles.css" asp-append-version="true" />
 </head>
+
 <body>
-    <partial name="Shared/NavMenuPartial"/>
+    <partial name="Shared/NavMenuPartial" />
 
     <h1>@ViewData["H1"]</h1>
     <header>
-    <!--  
+        <!--  
         Tag Helper 
         É um formato "amistoso" de se usar tags ASP.NET com HTML
         Para isso devemos adicionar o TagHelper com o código:
@@ -23,6 +25,7 @@
         @RenderBody()
     </main>
     <footer> 2023 - Powered by VSCZ </footer>
-    @RenderSection(name:"scripts",required:false)
+    @RenderSection(name: "scripts", required: false)
 </body>
+
 </html>
